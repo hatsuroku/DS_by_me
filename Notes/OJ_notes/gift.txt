@@ -1,0 +1,114 @@
+// POJ 1062
+// Dijsktra求1指向其他的最短路，再加上最后要买的替换物的价值
+// 注意是「整个交易等级差不能超过规定」，要去掉超过等级差的结点
+// 交换之后的价格有可能大于原本物品的价格，需要判断
+
+#include <iostream>
+#include <cstdlib>
+#include <queue>
+#include <vector>
+#include <cstring>
+#include <stdio.h>
+
+#define LOCAL
+
+#define INF 0x3f3f3f3f
+
+using namespace std;
+
+const int NMAX = 110;
+struct edge {
+    int from;
+    int to;
+    int t;
+};
+
+struct cmp {
+    bool operator() (edge &a, edge &b) {
+        return a.t > b.t;
+    }
+};
+
+vector<edge> adj[NMAX];
+
+int m,n;
+int value[NMAX];
+int prio[NMAX];
+priority_queue<edge, vector<edge>, cmp> pq;
+int dist[NMAX];
+
+
+
+void deleteVertex(int v) {
+    adj[v].clear();
+    for (int i = 0; i <= n; ++i) {
+        for(vector<edge>::iterator iter = adj[i].begin(); iter != adj[i].end();) {
+            if(iter->to == v) {
+                iter = adj[i].erase(iter);
+            }
+            else {
+                ++iter;
+            }
+        }
+    }
+}
+
+void relax(int v) {
+    for(vector<edge>::iterator i = adj[v].begin(); i != adj[v].end(); ++i) {
+        int tmp = dist[i->from] + i->t;
+        if(dist[i->to] > tmp) {
+            dist[i->to] = tmp;
+            for(vector<edge>::iterator j = adj[i->to].begin(); j != adj[i->to].end(); ++j) {
+                pq.push(*j);
+            }
+        }
+    }
+}
+
+
+int main(int argc, char* argv[]) {
+    ios::sync_with_stdio(false);
+    cin.tie(0);
+#ifdef LOCAL
+    freopen("input.txt", "r", stdin);
+    freopen("output.txt", "w", stdout);
+#endif
+    int min = INF;
+    memset(dist, 0x3f, sizeof(dist));
+    scanf("%d %d", &m, &n);
+    for(int i=1; i<=n; ++i) {
+        int subs;
+        scanf("%d %d %d", &value[i], &prio[i], &subs);
+        while(subs--) {
+            int to, v;
+            scanf("%d %d", &to, &v);
+            edge e1 = {i, to, v};
+            adj[i].push_back(e1);
+        }
+    }
+    for (int j = 1; j <= n; ++j) {
+        if(abs(prio[1] - prio[j]) > m) {
+            deleteVertex(j);
+        }
+    }
+
+    dist[1] = 0;
+    relax(1);
+    while(!pq.empty()) {
+        relax(pq.top().from);
+        pq.pop();
+    }
+
+    for(int i=1; i<=n; ++i) {
+        int tmp = dist[i] + value[i];
+        if(tmp < min) {
+            min = tmp;
+        }
+    }
+    if(min > value[1]) {
+        min = value[1];
+    }
+    printf("%d\n", min);
+
+    return 0;
+}

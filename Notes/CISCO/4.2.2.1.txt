@@ -1,0 +1,7 @@
+Unlike a wired network that requires physical access to a device, a wireless network can be targeted and exploited from a distance. Some of the common threats are:
+
+On-Wire Attacks where you can allow for a client-to-client backdoor access to the secured network.
+Over-the-Air Attacks, such as Honeypot APs, Rouge APs. Wireless APs can be easily deployed by anyone with access to a network connection, anywhere within a corporation or business. Unauthorized wireless APs are known more commonly as Rogue APs.
+Reconnaissance attack, occurs when an adversary tries to learn information about your network through unauthorized discovery and mapping of systems, services, or vulnerabilities. In most cases, it precedes an actual access or DoS attack.
+Denial-of-service attack (DoS), which is one of the simplest network attacks to perpetrate because it only requires limiting access to services. This is done by sending a large amount of traffic at a specific target to overwhelm the capacity and resources of the victim device, thereby rendering it unable to provide the require services to users.
+Cracking Tools. Basically wireless hacking tools are of two types. One of which can be used to sniff the network and monitor what is happening in the network. And other kinds of tools are used to hack WEP/WPA keys. These can crack Wi-Fi access and encryption, and facilitates eavesdropping.

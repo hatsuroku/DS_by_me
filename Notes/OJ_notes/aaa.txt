@@ -1,0 +1,97 @@
+#include <iostream>
+#include <cstdlib>
+#include <queue>
+#include <vector>
+#include <cstring>
+
+//#define LOCAL
+
+#define INF 0x3f3f3f3f;
+
+using namespace std;
+
+const int NMAX = 1000;
+struct edge {
+    int from;
+    int to;
+    int t;
+};
+
+vector<edge> adj[NMAX];
+queue<int> q;
+bool onQ[NMAX];
+
+int route_count[NMAX];
+
+int f;
+int n,m,w;
+bool flag;
+int dist[NMAX][NMAX];
+
+
+bool spfa(int v);
+
+int main(int argc, char* argv[]) {
+    ios::sync_with_stdio(false);
+    cin.tie(0);
+#ifdef LOCAL
+    freopen("input.txt", "r", stdin);
+    freopen("output.txt", "w", stdout);
+#endif
+    cin >> f;
+    while(f--) {
+        while(!q.empty()) q.pop();
+        memset(dist, 0x3f, sizeof(dist));
+        for (int l = 0; l < NMAX; ++l) {
+            adj[NMAX].clear();
+        }
+        cin >> n >> m >> w;
+        for (int i = 0; i < m; ++i) {
+            int s, e, t;
+            cin >> s >> e >> t;
+            edge e1 = {s, e, t};
+            edge e2 = {e, s, t};
+            adj[s].push_back(e1);
+            adj[e].push_back(e2);
+        }
+        for (int j = 0; j < w; ++j) {
+            int s, e, t;
+            cin >> s >> e >> t;
+            edge e1 = {s, e, -t};
+            adj[s].push_back(e1);
+        }
+        flag = false;
+        for(int k=1; k <= n; k++) {
+            spfa(k);
+        }
+        cout << (flag ? "YES\n" : "NO\n");
+    }
+
+    return 0;
+}
+
+bool spfa(int v) {
+    memset(onQ, 0, sizeof(onQ));
+    memset(route_count, 0, sizeof(route_count));
+    dist[v][v] = 0;
+    q.push(v);
+    while(!q.empty()) {
+        int from = q.front(); q.pop();
+        onQ[from] = false;
+        for(vector<edge>::iterator iter = adj[from].begin(); iter != adj[from].end(); ++iter) {
+            int tmp = dist[v][iter->from] + iter->t;
+            if(tmp < dist[v][iter->to]) {
+                dist[v][iter->to] = tmp;
+                if(!onQ[iter->to]){
+                    if(++route_count[iter->to] > n) {
+                        flag = true;
+                        return true;
+                    }
+                    q.push(iter->to);
+                    onQ[iter->to] = true;
+                }
+            }
+        }
+    }
+    return false;
+}

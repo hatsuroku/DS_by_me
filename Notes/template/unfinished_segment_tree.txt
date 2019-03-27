@@ -1,0 +1,71 @@
+#include <iostream>
+#include <stdio.h>
+#include <string.h>
+#include <time.h>
+
+using namespace std;
+#define LOCAL
+int tree[100000 + 10];
+int n, t;
+
+int sum(int a, int b) {
+	a += n-1, b += n-1;
+	int s = 0;
+	while (1) {
+		if (a % 2 == 0) s += tree[a++];
+		if (b % 2 == 1) s += tree[b--];
+		if (a > b) break;
+		a /= 2, b /= 2;
+	}
+	return s;
+}
+
+void add(int k, int v) {
+	k += n - 1;
+	tree[k] += v;
+	for (k = --k/2; k >= 1; k /= 2) {
+		tree[k] = tree[2 * k] + tree[2 * k + 1];
+	}
+}
+
+int main() {
+#ifdef LOCAL
+	freopen("F:\\VSproject\\RealHomeWork\\CPPLearning\\CPPLearning\\input.txt", "r", stdin);
+	freopen("F:\\VSproject\\RealHomeWork\\CPPLearning\\CPPLearning\\output.txt", "w", stdout);
+#endif
+	scanf("%d", &t);
+	for (int my_case = 1; my_case <= t; ++my_case) {
+		memset(tree, 0, sizeof(tree));
+		scanf("%d", &n);
+		printf("Case %d:\n", my_case);
+		for (int i = 1; i <= n; ++i) {
+			int tmp;
+			scanf("%d", &tmp);
+			add(i, tmp);
+		}
+		char ins[10];
+		do {
+			int k, v;
+			scanf("%s", ins);
+			if (!strcmp(ins, "Add")) {
+				scanf("%d%d", &k, &v);
+				add(k, v);
+			}
+			else if (!strcmp(ins, "Sub")) {
+				scanf("%d%d", &k, &v);
+				add(k, -v);
+			}
+			else if (!strcmp(ins, "Query")) {
+				scanf("%d%d", &k, &v);
+				int rst = sum(k, v);
+				printf("%d\n", rst);
+			}
+			else if (!strcmp(ins, "End")) {
+				break;
+			}
+			else {
+				printf("%d", my_case);
+			}
+		} while (1);
+	}
+}
